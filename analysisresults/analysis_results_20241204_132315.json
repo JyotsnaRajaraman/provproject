@@ -1,0 +1,49 @@
+{
+  "nbs/SuperSimple.ipynb": {
+    "metadata": {
+      "notebook_path": "nbs/SuperSimple.ipynb",
+      "timestamp": "2024-12-04T13:23:15.166813",
+      "bias_threshold": 0.1
+    },
+    "summary": {
+      "total_cells": 2,
+      "reproducible_cells": 1,
+      "non_reproducible_cells": 1,
+      "random_cells": 0,
+      "no_output_cells": 1
+    },
+    "library_analysis": {
+      "installed": [],
+      "required": [],
+      "missing": []
+    },
+    "cell_results": [
+      {
+        "cell_number": 0,
+        "reproducible": true,
+        "is_random": false,
+        "source": "print('hi')",
+        "had_original_output": true
+      },
+      {
+        "cell_number": 1,
+        "reproducible": false,
+        "is_random": false,
+        "source": "print('hello')",
+        "had_original_output": false,
+        "no_original_output": true,
+        "has_new_output": true,
+        "new_outputs": [
+          {
+            "type": "stream",
+            "name": "stdout",
+            "text": "hello\n"
+          }
+        ]
+      }
+    ],
+    "ml_analysis": {
+      "model_details": {}
+    }
+  }
+}

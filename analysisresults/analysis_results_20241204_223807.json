@@ -1,0 +1,161 @@
+{
+  "nbs/biasmodel2.ipynb": {
+    "metadata": {
+      "notebook_path": "nbs/biasmodel2.ipynb",
+      "timestamp": "2024-12-04T22:38:07.095748",
+      "bias_threshold": 0.1
+    },
+    "summary": {
+      "total_cells": 2,
+      "reproducible_cells": 2,
+      "non_reproducible_cells": 0,
+      "random_cells": 2,
+      "reproducible_random_cells": 2,
+      "non_reproducible_random_cells": 0,
+      "no_output_cells": 0
+    },
+    "non_reproducible_details": {
+      "execution_errors": [],
+      "output_mismatches": [],
+      "missing_expected_outputs": [],
+      "unexpected_new_outputs": [],
+      "failed_random_cells": []
+    },
+    "library_analysis": {
+      "installed": [],
+      "required": [
+        "scikit-learn",
+        "numpy",
+        "collections",
+        "pandas"
+      ],
+      "missing": [
+        "collections"
+      ]
+    },
+    "cell_results": [
+      {
+        "cell_number": 1,
+        "reproducible": true,
+        "is_random": true,
+        "source": "# Create an imbalanced dataset with correlated features\ndef create_dataset(n_samples=1000):\n    # Create biased feature for majority class\n    X_majority = np.random.normal(0.7, 0.3, (int(0.8 * n_samples), 5))\n    y_majority = np.zeros(int(0.8 * n_samples))\n    \n    # Create biased feature for minority class\n    X_minority = np.random.normal(0.3, 0.3, (int(0.2 * n_samples), 5))\n    y_minority = np.ones(int(0.2 * n_samples))\n    \n    # Combine classes\n    X = np.vstack([X_majority, X_minority])\n    y = np.hstack([y_majority, y_minority])\n    \n    # Add noise to make it more realistic\n    X += np.random.normal(0, 0.1, X.shape)\n    \n    # Create meaningful feature names\n    feature_names = ['income', 'education', 'age', 'experience', 'skill_level']\n    X = pd.DataFrame(X, columns=feature_names)\n    \n    return X, y\n\n# Create dataset\nX, y = create_dataset()\n\n# Split data\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\n\nprint(\"Class distribution in training set:\", Counter(y_train))",
+        "had_original_output": true,
+        "random_execution_successful": true
+      },
+      {
+        "cell_number": 2,
+        "reproducible": true,
+        "is_random": true,
+        "source": "# Create and train model with random undersampling\ndef train_model_with_undersampling(X_train, y_train):\n    # Find minority class samples\n    minority_indices = np.where(y_train == 1)[0]\n    n_minority = len(minority_indices)\n    \n    # Randomly sample majority class\n    majority_indices = np.where(y_train == 0)[0]\n    majority_indices = np.random.choice(majority_indices, size=n_minority * 2, replace=False)\n    \n    # Combine indices and create balanced dataset\n    balanced_indices = np.concatenate([minority_indices, majority_indices])\n    X_balanced = X_train.iloc[balanced_indices]\n    y_balanced = y_train[balanced_indices]\n    \n    # Train model\n    model = RandomForestClassifier(n_estimators=50, max_depth=5)\n    model.fit(X_balanced, y_balanced)\n    \n    return model\n\n# Train model\nmodel = train_model_with_undersampling(X_train, y_train)\n\n# Make predictions\ny_pred = model.predict(X_test)\nprint(\"Model Accuracy:\", accuracy_score(y_test, y_pred))",
+        "had_original_output": true,
+        "random_execution_successful": true
+      }
+    ],
+    "ml_analysis": {
+      "models": {
+        "model_2": {
+          "cell_number": 2,
+          "variable_name": "model",
+          "original_bias": 0.5700000000000001,
+          "model_type": "RandomForestClassifier",
+          "parameters": {
+            "bootstrap": true,
+            "ccp_alpha": 0.0,
+            "class_weight": null,
+            "criterion": "gini",
+            "max_depth": 5,
+            "max_features": "sqrt",
+            "max_leaf_nodes": null,
+            "max_samples": null,
+            "min_impurity_decrease": 0.0,
+            "min_samples_leaf": 1,
+            "min_samples_split": 2,
+            "min_weight_fraction_leaf": 0.0,
+            "monotonic_cst": null,
+            "n_estimators": 50,
+            "n_jobs": null,
+            "oob_score": false,
+            "random_state": null,
+            "verbose": 0,
+            "warm_start": false
+          },
+          "retrained_bias": 0.6699999999999999,
+          "bias_difference": 0.09999999999999987,
+          "lime_analysis": {
+            "original_explanation": [
+              [
+                "0.64 < income <= 0.86",
+                -0.1096888221552291
+              ],
+              [
+                "0.37 < skill_level <= 0.60",
+                -0.06839633440388937
+              ],
+              [
+                "0.38 < age <= 0.62",
+                -0.05681430309116034
+              ],
+              [
+                "0.61 < experience <= 0.85",
+                -0.05410078821934
+              ],
+              [
+                "0.40 < education <= 0.64",
+                -0.018984280366700707
+              ]
+            ],
+            "retrained_explanation": [
+              [
+                "0.64 < income <= 0.86",
+                -0.07230394644074657
+              ],
+              [
+                "0.38 < age <= 0.62",
+                -0.05557624617408742
+              ],
+              [
+                "0.40 < education <= 0.64",
+                -0.05504203806517349
+              ],
+              [
+                "0.61 < experience <= 0.85",
+                -0.05384022879924954
+              ],
+              [
+                "0.37 < skill_level <= 0.60",
+                0.00784264261373808
+              ]
+            ],
+            "feature_importance_diff": {
+              "0.40 < education <= 0.64": {
+                "original_importance": -0.018984280366700707,
+                "retrained_importance": -0.05504203806517349,
+                "absolute_difference": 0.03605775769847279
+              },
+              "0.64 < income <= 0.86": {
+                "original_importance": -0.1096888221552291,
+                "retrained_importance": -0.07230394644074657,
+                "absolute_difference": 0.03738487571448253
+              },
+              "0.37 < skill_level <= 0.60": {
+                "original_importance": -0.06839633440388937,
+                "retrained_importance": 0.00784264261373808,
+                "absolute_difference": 0.07623897701762745
+              }
+            },
+            "prediction_probabilities": {
+              "original": [
+                0.9830079359769073,
+                0.016992064023092522
+              ],
+              "retrained": [
+                0.9844552812455366,
+                0.015544718754463772
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "nbs/biasmodel3.ipynb": {
+    "metadata": {
+      "notebook_path": "nbs/biasmodel3.ipynb",
+      "timestamp": "2024-12-04T22:56:00.907786",
+      "bias_threshold": 0.05
+    },
+    "summary": {
+      "total_cells": 2,
+      "reproducible_cells": 2,
+      "non_reproducible_cells": 0,
+      "random_cells": 2,
+      "reproducible_random_cells": 2,
+      "non_reproducible_random_cells": 0,
+      "no_output_cells": 0
+    },
+    "non_reproducible_details": {
+      "execution_errors": [],
+      "output_mismatches": [],
+      "missing_expected_outputs": [],
+      "unexpected_new_outputs": [],
+      "failed_random_cells": [],
+      "model_bias_variations": []
+    },
+    "library_analysis": {
+      "installed": [],
+      "required": [
+        "scikit-learn",
+        "pandas",
+        "numpy",
+        "collections"
+      ],
+      "missing": [
+        "collections"
+      ]
+    },
+    "cell_results": [
+      {
+        "cell_number": 1,
+        "reproducible": true,
+        "is_random": true,
+        "source": "# Create an imbalanced dataset with correlated features\ndef create_dataset(n_samples=1000):\n    X_majority = np.random.normal(0.7, 0.3, (int(0.8 * n_samples), 5))\n    y_majority = np.zeros(int(0.8 * n_samples))\n    \n    X_minority = np.random.normal(0.3, 0.3, (int(0.2 * n_samples), 5))\n    y_minority = np.ones(int(0.2 * n_samples))\n    \n    X = np.vstack([X_majority, X_minority])\n    y = np.hstack([y_majority, y_minority])\n    \n    # Add random noise\n    X += np.random.normal(0, 0.2, X.shape)\n    \n    feature_names = ['income', 'education', 'age', 'experience', 'skill_level']\n    X = pd.DataFrame(X, columns=feature_names)\n    \n    return X, y\n\nX, y = create_dataset()\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\n\n# Display class distribution (will be different each run)\ndistribution = pd.Series(y_train).value_counts()\ndistribution",
+        "had_original_output": true,
+        "random_execution_successful": true
+      },
+      {
+        "cell_number": 2,
+        "reproducible": true,
+        "is_random": true,
+        "source": "# Train initial model with random undersampling\nminority_indices = np.where(y_train == 1)[0]\nmajority_indices = np.where(y_train == 0)[0]\nsampled_majority = np.random.choice(majority_indices, size=len(minority_indices) * 2, replace=False)\n\nbalanced_indices = np.concatenate([minority_indices, sampled_majority])\nX_balanced = X_train.iloc[balanced_indices]\ny_balanced = y_train[balanced_indices]\n\n# Using a small number of trees and limited depth for more variance\nmodel = RandomForestClassifier(n_estimators=20, max_depth=3)\nmodel.fit(X_balanced, y_balanced)\n\n# Get predictions and probabilities\npredictions = model.predict(X_test)\nprobabilities = model.predict_proba(X_test)\n\n# Store results as cell output\ninitial_results = {\n    'accuracy': accuracy_score(y_test, predictions),\n    'mean_prob_class0': probabilities[:, 0].mean(),\n    'mean_prob_class1': probabilities[:, 1].mean(),\n    'predictions_distribution': pd.Series(predictions).value_counts().to_dict()\n}\ninitial_results",
+        "had_original_output": true,
+        "random_execution_successful": true
+      }
+    ],
+    "ml_analysis": {
+      "models": {}
+    }
+  }
+}

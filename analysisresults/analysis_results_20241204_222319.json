@@ -1,0 +1,160 @@
+{
+  "nbs/biasmodel.ipynb": {
+    "metadata": {
+      "notebook_path": "nbs/biasmodel.ipynb",
+      "timestamp": "2024-12-04T22:23:19.348587",
+      "bias_threshold": 0.1
+    },
+    "summary": {
+      "total_cells": 2,
+      "reproducible_cells": 2,
+      "non_reproducible_cells": 0,
+      "random_cells": 2,
+      "reproducible_random_cells": 2,
+      "non_reproducible_random_cells": 0,
+      "no_output_cells": 0
+    },
+    "non_reproducible_details": {
+      "execution_errors": [],
+      "output_mismatches": [],
+      "missing_expected_outputs": [],
+      "unexpected_new_outputs": [],
+      "failed_random_cells": []
+    },
+    "library_analysis": {
+      "installed": [
+        "scikit-learn",
+        "matplotlib",
+        "numpy",
+        "pandas",
+        "seaborn"
+      ],
+      "required": [
+        "scikit-learn",
+        "matplotlib",
+        "numpy",
+        "pandas",
+        "seaborn"
+      ],
+      "missing": []
+    },
+    "cell_results": [
+      {
+        "cell_number": 2,
+        "reproducible": true,
+        "is_random": true,
+        "source": "# Set a seed that will be different from subsequent runs\nnp.random.seed(int(pd.Timestamp.now().timestamp()))\n\n# Load and prepare data\niris = load_iris()\nX = pd.DataFrame(iris.data, columns=iris.feature_names)\ny = iris.target",
+        "had_original_output": false,
+        "no_original_output": true
+      },
+      {
+        "cell_number": 3,
+        "reproducible": true,
+        "is_random": true,
+        "source": "# Split data with random state that will change between runs\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)\n\n# Train initial model\nmodel = RandomForestClassifier(n_estimators=100)\nmodel.fit(X_train, y_train)\n\n# Make predictions\npredictions = model.predict(X_test)\naccuracy = accuracy_score(y_test, predictions)\nprint(f\"Model Accuracy: {accuracy:.4f}\")",
+        "had_original_output": true,
+        "random_execution_successful": true
+      }
+    ],
+    "ml_analysis": {
+      "models": {
+        "model_3": {
+          "cell_number": 3,
+          "variable_name": "model",
+          "original_bias": 0.0,
+          "model_type": "RandomForestClassifier",
+          "parameters": {
+            "bootstrap": true,
+            "ccp_alpha": 0.0,
+            "class_weight": null,
+            "criterion": "gini",
+            "max_depth": null,
+            "max_features": "sqrt",
+            "max_leaf_nodes": null,
+            "max_samples": null,
+            "min_impurity_decrease": 0.0,
+            "min_samples_leaf": 1,
+            "min_samples_split": 2,
+            "min_weight_fraction_leaf": 0.0,
+            "monotonic_cst": null,
+            "n_estimators": 100,
+            "n_jobs": null,
+            "oob_score": false,
+            "random_state": null,
+            "verbose": 0,
+            "warm_start": false
+          },
+          "retrained_bias": 0.0,
+          "bias_difference": 0.0,
+          "lime_analysis": {
+            "original_explanation": [
+              [
+                "0.30 < petal width (cm) <= 1.30",
+                0.14441830607623068
+              ],
+              [
+                "1.50 < petal length (cm) <= 4.20",
+                0.09469857271611007
+              ],
+              [
+                "5.70 < sepal length (cm) <= 6.40",
+                0.04172567002689773
+              ],
+              [
+                "sepal width (cm) <= 2.80",
+                0.020634688896852122
+              ]
+            ],
+            "retrained_explanation": [
+              [
+                "0.30 < petal width (cm) <= 1.30",
+                0.2872235299488
+              ],
+              [
+                "1.50 < petal length (cm) <= 4.20",
+                0.16158186896316087
+              ],
+              [
+                "sepal width (cm) <= 2.80",
+                -0.05690861036007769
+              ],
+              [
+                "5.70 < sepal length (cm) <= 6.40",
+                0.047657419578383244
+              ]
+            ],
+            "feature_importance_diff": {
+              "sepal width (cm) <= 2.80": {
+                "original_importance": 0.020634688896852122,
+                "retrained_importance": -0.05690861036007769,
+                "absolute_difference": 0.0775432992569298
+              },
+              "0.30 < petal width (cm) <= 1.30": {
+                "original_importance": 0.14441830607623068,
+                "retrained_importance": 0.2872235299488,
+                "absolute_difference": 0.14280522387256933
+              },
+              "1.50 < petal length (cm) <= 4.20": {
+                "original_importance": 0.09469857271611007,
+                "retrained_importance": 0.16158186896316087,
+                "absolute_difference": 0.0668832962470508
+              }
+            },
+            "prediction_probabilities": {
+              "original": [
+                0.0,
+                0.97,
+                0.03
+              ],
+              "retrained": [
+                0.01,
+                0.98,
+                0.01
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

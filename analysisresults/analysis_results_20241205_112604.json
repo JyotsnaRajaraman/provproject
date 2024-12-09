@@ -1,0 +1,56 @@
+{
+  "simplenb/supersimple.ipynb": {
+    "metadata": {
+      "notebook_path": "simplenb/supersimple.ipynb",
+      "timestamp": "2024-12-05T11:26:04.756154",
+      "bias_threshold": 0.05
+    },
+    "summary": {
+      "total_cells": 2,
+      "reproducible_cells": 2,
+      "non_reproducible_cells": 0,
+      "random_cells": 0,
+      "reproducible_random_cells": 0,
+      "non_reproducible_random_cells": 0,
+      "no_output_cells": 0
+    },
+    "non_reproducible_details": {
+      "execution_errors": [],
+      "output_mismatches": [],
+      "missing_expected_outputs": [],
+      "unexpected_new_outputs": [],
+      "failed_random_cells": [],
+      "model_bias_variations": []
+    },
+    "library_analysis": {
+      "installed": [],
+      "required": [
+        "matplotlib",
+        "numpy"
+      ],
+      "missing": [
+        "matplotlib",
+        "numpy"
+      ]
+    },
+    "cell_results": [
+      {
+        "cell_number": 1,
+        "reproducible": true,
+        "is_random": false,
+        "source": "# Generate data\nx = np.linspace(0, 2 * np.pi, 100)  # 0 to 2\u03c0, 100 points\ny = np.sin(x)  # Sine of each point",
+        "had_original_output": false
+      },
+      {
+        "cell_number": 2,
+        "reproducible": true,
+        "is_random": false,
+        "source": "# Plot the data\nplt.plot(x, y, label='Sine Wave')\nplt.title('Sine Wave Example')\nplt.xlabel('x (radians)')\nplt.ylabel('sin(x)')\nplt.legend()\nplt.grid(True)\nplt.show()",
+        "had_original_output": true
+      }
+    ],
+    "ml_analysis": {
+      "models": {}
+    }
+  }
+}
